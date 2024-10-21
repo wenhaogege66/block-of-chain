@@ -4,11 +4,8 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract BuyMyRoom is ERC721Enumerable, Ownable {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIdCounter;
     // 房产ID计数器
     uint256 private _currentTokenId = 0;
     uint256 public platformFeePercent = 1; // 平台手续费比例，按百分比计算
@@ -38,9 +35,9 @@ contract BuyMyRoom is ERC721Enumerable, Ownable {
     constructor() ERC721("HouseToken", "HST") Ownable(msg.sender) {
         // 给前三个预定义的用户铸造房产NFT
         address[3] memory initialUsers = [
-            0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, // 用户1地址
-            0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2, // 用户2地址
-            0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db // 用户3地址
+            0x0650bE2053B6130119829fA54a06AA79CA4B44e6, // 用户1地址
+            0x260d14d5fB4b436155FDdce95197A0024069ab00, // 用户2地址
+            0x4444702d9d970d2EE7B51DE8756Ea46d5A81258c // 用户3地址
         ];
 
         // 给每个初始用户铸造 3 个房产NFT

@@ -1,16 +1,22 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const BuyMyRoom = await ethers.getContractFactory("BuyMyRoom.sol");
+  // 获取合约工厂
+  const BuyMyRoom = await ethers.getContractFactory("BuyMyRoom");
+
+  // 部署合约
   const buyMyRoom = await BuyMyRoom.deploy();
+  console.log("Deploying BuyMyRoom...");
+
+  // 等待合约部署完成
   await buyMyRoom.deployed();
 
-  console.log(`BuyMyRoom deployed to ${buyMyRoom.address}`);
+  // 输出部署后的合约地址
+  console.log(`BuyMyRoom deployed to: ${buyMyRoom.address}`);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
+// 异常处理及退出
 main().catch((error) => {
-  console.error(error);
+  console.error("Deployment failed:", error);
   process.exitCode = 1;
 });

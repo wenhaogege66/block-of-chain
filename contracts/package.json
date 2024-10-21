@@ -3,6 +3,9 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@openzeppelin/contracts": "^5.0.0",
-    "hardhat": "^2.18.1"
+    "hardhat": "^2.22.13"
+  },
+  "dependencies": {
+    "iconv-lite": "^0.6.3"
   }
 }
