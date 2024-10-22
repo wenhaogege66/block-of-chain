@@ -13,6 +13,8 @@ async function main() {
 
   // 输出部署后的合约地址
   console.log(`BuyMyRoom deployed to: ${buyMyRoom.address}`);
+  const erc20 = await buyMyRoom.myERC20();
+  console.log(`erc20 contract has been deployed successfully in ${erc20}`)
 }
 
 // 异常处理及退出

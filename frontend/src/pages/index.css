@@ -1,0 +1,203 @@
+/* From Uiverse.io by eslam-hany */
+.houses-container {
+    margin-top: 30px;
+    margin-left: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content:left;
+    /* 每个房屋卡片之间的间距 */
+}
+
+.book {
+    margin-left: 20px;
+    margin-right: 20px;
+    position: relative;
+    border-radius: 10px;
+    width: 220px;
+    height: 300px;
+    background-color: whitesmoke;
+    -webkit-box-shadow: 1px 1px 12px #000;
+    box-shadow: 1px 1px 12px #000;
+    -webkit-transform: preserve-3d;
+    -ms-transform: preserve-3d;
+    transform: preserve-3d;
+    -webkit-perspective: 2000px;
+    perspective: 2000px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    color: #000;
+    margin-bottom: 20px;
+    /* 使每行换行的间距更明显 */
+}
+
+.cover {
+    top: 0;
+    position: absolute;
+    background-color: lightgray;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    -webkit-transform-origin: 0;
+    -ms-transform-origin: 0;
+    transform-origin: 0;
+    -webkit-box-shadow: 1px 1px 12px #000;
+    box-shadow: 1px 1px 12px #000;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content:center;
+    text-align: center;
+    padding: 10px;
+}
+
+.book:hover .cover {
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+    -webkit-transform: rotatey(-80deg);
+    -ms-transform: rotatey(-80deg);
+    transform: rotatey(-80deg);
+}
+
+p {
+    font-size: 20px;
+    font-weight: bolder;
+    word-break: break-word;
+    /* 使长文本能够自动换行 */
+}
+
+/* From Uiverse.io by btongheng */
+.book .button {
+    margin-top: 190px;
+    margin-bottom: 90px;
+    --😀: #644dff;
+    --😀😀: #4836bb;
+    --😀😀😀: #654dff63;
+    cursor: pointer;
+    width: 170px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 1.125em;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #fff;
+    background: var(--😀);
+    border: 2px solid var(--😀😀);
+    border-radius: .75rem;
+    box-shadow: 0 8px 0 var(--😀😀);
+    transform: skew(-10deg);
+    transition: all .1s ease;
+    filter: drop-shadow(0 15px 20px var(--😀😀😀));
+}
+
+.book .button:active {
+    letter-spacing: 0px;
+    transform: skew(-10deg) translateY(8px);
+    box-shadow: 0 0 0 var(--😀😀😀);
+}
+
+/* From Uiverse.io by guilhermeyohan */ 
+.subscribe-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* 半透明背景 */
+    width: 100%;
+    height: 100vh;
+    /* 使容器占满整个屏幕高度 */
+    z-index: 1000;
+    /* 确保它在页面最上层 */
+}
+
+.subscribe {
+  position: relative;
+  height: 140px;
+  width: 240px;
+  padding: 20px;
+  background-color: #FFF;
+  border-radius: 4px;
+  color: #333;
+  box-shadow: 0px 0px 60px 5px rgba(0, 0, 0, 0.4);
+}
+
+.subscribe:after {
+  position: absolute;
+  content: "";
+  right: -10px;
+  bottom: 18px;
+  width: 0;
+  height: 0;
+  border-left: 0px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #1a044e;
+}
+
+.subscribe p {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  line-height: 28px;
+}
+
+.subscribe input {
+  border: none;
+  border-bottom: 1px solid #d4d4d4;
+  padding: 10px;
+  width: 82%;
+  background: transparent;
+  transition: all .25s ease;
+}
+
+.subscribe input:focus {
+  outline: none;
+  border-bottom: 1px solid #0d095e;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', 'sans-serif';
+}
+
+.subscribe .submit-btn {
+  position: absolute;
+  border-radius: 30px;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  background-color: #0f0092;
+  color: #FFF;
+  padding: 12px 25px;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  right: -10px;
+  bottom: -20px;
+  cursor: pointer;
+  transition: all .25s ease;
+  box-shadow: -5px 6px 20px 0px rgba(26, 26, 26, 0.4);
+}
+
+.subscribe .submit-btn:hover {
+  background-color: #07013d;
+  box-shadow: -5px 6px 20px 0px rgba(88, 88, 88, 0.569);
+}
