@@ -46,9 +46,9 @@ contract BuyMyRoom is ERC721Enumerable, Ownable {
         manager = msg.sender;
         // 给前三个预定义的用户铸造房产NFT
         address[3] memory initialUsers = [
-            0x0650bE2053B6130119829fA54a06AA79CA4B44e6, // 用户1地址
-            0x260d14d5fB4b436155FDdce95197A0024069ab00, // 用户2地址
-            0x4444702d9d970d2EE7B51DE8756Ea46d5A81258c // 用户3地址
+            0x3aC8952803d3CA159A1D6528d9fD32d33902a529, // 用户1地址
+            0xC46c265a9045921A03a65B6809fe66CC105a6DAA, // 用户2地址
+            0x0BF25cdf43c496F9ACD92373Ba2a00517e8E3ceB // 用户3地址
         ];
 
         // 给每个初始用户铸造 3 个房产NFT

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { web3, BuyMyRoomContract,myERC20Contract } from "../utils/contracts"; // 确保导入了web3和BuyMyRoomContract
+import { web3, BuyMyRoomContract, myERC20Contract } from "../utils/contracts"; // 确保导入了web3和BuyMyRoomContract
 import { ethers, fromTwos } from "ethers";
 import { log } from "console";
 import "./index.css"
@@ -11,6 +11,7 @@ const GanacheTestChainRpcUrl = "http://127.0.0.1:8545";
 
 const BuyMyRoomPage = () => {
     const [account, setAccount] = useState("");
+    const [accountBalance, setAccountBalance] = useState<ethers.BigNumberish>(0)
     const [sellhousevisible, setSellhousevisible] = useState(false);
     const [sellhouseIndex, setSellhouseIndex] = useState(0);
     const [sellhouseid, setSellhouseid] = useState<ethers.BigNumberish>(0);
@@ -24,20 +25,37 @@ const BuyMyRoomPage = () => {
     );
 
     useEffect(() => {
-        // 初始化检查用户是否已经连接钱包
-        // 查看window对象里是否存在ethereum（metamask安装后注入的）对象
         const initCheckAccounts = async () => {
             // @ts-ignore
             const { ethereum } = window;
             if (Boolean(ethereum && ethereum.isMetaMask)) {
                 // 尝试获取连接的用户账户
                 const accounts = await web3.eth.getAccounts();
-                // console.log("当前用户:", accounts[0]);
+                console.log("第一次获得当前用户:", accounts[0]);
                 if (accounts && accounts.length) {
                     setAccount(accounts[0]);
                 }
+            }
+        };
+
+        // 设置一个定时器，每隔10秒执行一次
+        const interval = setInterval(() => {
+            initCheckAccounts();
+        }, 1000); // 10000ms = 10秒
+
+        // 在组件卸载时清除定时器
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        const getHouseContractInfo = async () => {
+            if (BuyMyRoomContract) {
+                const accounts = await web3.eth.getAccounts();
                 if (accounts[0]) {
-                    const houselist:number[] = await BuyMyRoomContract.methods
+                    const ab: number = await myERC20Contract.methods.balanceOf(accounts[0]).call()
+                    console.log("当前文豪币:", ab.toString());
+                    setAccountBalance(ab)
+                    const houselist: number[] = await BuyMyRoomContract.methods
                         .getHousesByOwner(accounts[0])
                         .call(); //getHousesByOwner传入当前用户的地址
                     if (houselist) {
@@ -45,44 +63,34 @@ const BuyMyRoomPage = () => {
                         houselist.forEach(async (element, index) => {
                             const tmp: { owner: string, price: number, forSale: boolean, listedTimestamp: number, id: number } = await BuyMyRoomContract.methods.getHouseDetails(houselist[index]).call();
                             // console.log("当前tmp的id:", tmp.id.toString());
-                            houselist_info.push({ owner: tmp.owner, price: tmp.price.toString(), forSale: tmp.forSale, listedTimestamp: tmp.listedTimestamp.toString(), id: houselist[index].toString()})
+                            houselist_info.push({ owner: tmp.owner, price: tmp.price.toString(), forSale: tmp.forSale, listedTimestamp: tmp.listedTimestamp.toString(), id: houselist[index].toString() })
                         });
                         console.log("当前houselist_info:", houselist_info);
                         setUserHouses(houselist_info);
                     }
                 }
-            }
-        };
-
-        initCheckAccounts();
-    }, []);
-
-    useEffect(() => {
-        const getHouseContractInfo = async () => {
-            if (BuyMyRoomContract) {
-                const salehouselist:number[] = await BuyMyRoomContract.methods
+                const salehouselist: number[] = await BuyMyRoomContract.methods
                     .getHousesForSale()
                     .call();
-                // console.log("当前卖的房子:",salehouselist);
-                    if (salehouselist) {
-                        let salehouselist_info: {}[] = [];
-                        salehouselist.forEach(async (element, index) => {
-                            const tmp: { owner: string, price: number, forSale: boolean, listedTimestamp: number, id: number } = await BuyMyRoomContract.methods.getHouseDetails(salehouselist[index]).call();
-                            salehouselist_info.push({ owner: tmp.owner, price: tmp.price.toString(), forSale: tmp.forSale, listedTimestamp: tmp.listedTimestamp.toString(), id: salehouselist[index].toString()})
-                        });
-                        console.log("当前salehouselist_info:", salehouselist_info);
-                        setSellHouses(salehouselist_info);
-                    }
-                
+                if (salehouselist) {
+                    let salehouselist_info: {}[] = [];
+                    salehouselist.forEach(async (element, index) => {
+                        const tmp: { owner: string, price: number, forSale: boolean, listedTimestamp: number, id: number } = await BuyMyRoomContract.methods.getHouseDetails(salehouselist[index]).call();
+                        salehouselist_info.push({ owner: tmp.owner, price: tmp.price.toString(), forSale: tmp.forSale, listedTimestamp: tmp.listedTimestamp.toString(), id: salehouselist[index].toString() })
+                    });
+                    console.log("当前salehouselist_info:", salehouselist_info);
+                    setSellHouses(salehouselist_info);
+                }
+
             } else {
                 alert("Contract not exists.");
             }
         };
-
         getHouseContractInfo();
     }, []);
 
     const onClickConnectWallet = async () => {
+        // window.location.reload();
         // 查看window对象里是否存在ethereum（metamask安装后注入的）对象
         // @ts-ignore
         const { ethereum } = window;
@@ -127,20 +135,20 @@ const BuyMyRoomPage = () => {
         }
     };
 
-    const onClickBuyHouse = async (houseId: string, houseindex: number,price:string) => {
-        setBuyprice(0);
+    const onClickBuyHouse = async (houseId: string, houseindex: number, price: string) => {
+        setBuyprice(ethers.toBigInt(price));
         console.log(`Buy house with ID: ${ethers.toBigInt(houseId)}`);
         console.log(`house price: ${ethers.toBigInt(price)}`);
-        try
-            {
-                // 当前用户将一些资金授予给lottery合约
-                await myERC20Contract.methods.approve(BuyMyRoomContract.options.address, buyprice).send({
-                    from: account
-                })
-                await BuyMyRoomContract.methods.buyHouse(ethers.toBigInt(houseId)).send({from:account})
-            }
-            catch (error: any) {
-                alert(error.message);
+        try {
+            // 当前用户将一些资金授予给lottery合约
+            await myERC20Contract.methods.approve(BuyMyRoomContract.options.address, ethers.toBigInt(price)).send({
+                from: account
+            })
+            await BuyMyRoomContract.methods.buyHouse(ethers.toBigInt(houseId)).send({ from: account })
+        }
+        catch (error: any) {
+            console.error("Error during buyHouse:", error);
+            alert(`Error: ${error.message}. Full details: ${JSON.stringify(error)}`);
         }
     }
 
@@ -158,16 +166,13 @@ const BuyMyRoomPage = () => {
 
     const confirmSell = async () => {
         console.log(`Selling price: ${ethers.toBigInt(sellprice)}`);
-        if(sellprice == 0)
-        {
+        if (sellprice == 0) {
             alert("请输入价格");
         }
-        else
-        {
-        setSellhousevisible(false);
-        try
-            {
-                await BuyMyRoomContract.methods.listHouseForSale(sellhouseid, sellprice).send({from:account})
+        else {
+            setSellhousevisible(false);
+            try {
+                await BuyMyRoomContract.methods.listHouseForSale(sellhouseid, sellprice).send({ from: account })
             }
             catch (error: any) {
                 alert(error.message);
@@ -175,13 +180,35 @@ const BuyMyRoomPage = () => {
         }
     };
 
+    const onClaimTokenAirdrop = async () => {
+        if (account === '') {
+            alert('You have not connected wallet yet.')
+            return
+        }
+        if (myERC20Contract) {
+            try {
+                await myERC20Contract.methods.airdrop().send({
+                    from: account
+                })
+                alert('You have claimed WenCoin Token.')
+            } catch (error: any) {
+                alert(error.message)
+            }
+
+        } else {
+            alert('Contract not exists.')
+        }
+    }
+
 
 
     return (
         <div>
-            <h3>当前账户为: {account}</h3>
+            <div>当前用户：{account === '' ? '无用户连接' : account}</div>
+            <div>当前用户拥有文豪币数量：{account === '' ? 0 : accountBalance.toString()}</div>
             <div>
                 <button onClick={onClickConnectWallet}>Connect Wallet</button>
+                <button onClick={onClaimTokenAirdrop}>领取文豪币空投</button>
             </div>
 
 
@@ -220,7 +247,7 @@ const BuyMyRoomPage = () => {
                 )}
             </div>
             <h3>正在售卖的房产:</h3>
-                        <div className="houses-container">
+            <div className="houses-container">
                 {sellHouses.length > 0 ? (
                     sellHouses.map((element: any, index: number) => {
                         // 处理owner显示格式：前5个和后三个字符，中间用省略号
@@ -228,7 +255,7 @@ const BuyMyRoomPage = () => {
 
                         return (
                             <div key={index} className="book">
-                                <button className="button" onClick={() => onClickBuyHouse(element.id, index,element.price)}>Buy it Now!</button>
+                                <button className="button" onClick={() => onClickBuyHouse(element.id, index, element.price)}>Buy it Now!</button>
                                 <div className="cover">
                                     <div><p>House {index + 1}</p></div>
                                     <div><p>Owner: {shortenedOwner}</p></div>
@@ -239,7 +266,7 @@ const BuyMyRoomPage = () => {
                         );
                     })
                 ) : (
-                    <p>No houses owned by the user.</p>
+                    <p>No house is selling now .</p>
                 )}
             </div>
         </div>
