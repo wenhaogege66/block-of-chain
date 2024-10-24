@@ -5,7 +5,9 @@ async function main() {
   const BuyMyRoom = await ethers.getContractFactory("BuyMyRoom");
 
   // 部署合约
-  const buyMyRoom = await BuyMyRoom.deploy({});
+  const buyMyRoom = await BuyMyRoom.deploy({
+    // gasLimit: 5000000 // 根据需要调整油费限制
+  });
   console.log("Deploying BuyMyRoom...");
 
   // 等待合约部署完成

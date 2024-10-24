@@ -13,6 +13,9 @@
     margin-left: 20px;
     margin-right: 20px;
     position: relative;
+    background-size: cover;
+        /* Adjust this as needed */
+    background-position: center;
     border-radius: 10px;
     width: 220px;
     height: 300px;
@@ -32,6 +35,7 @@
     align-items: center;
     -webkit-box-pack: center;
     -ms-flex-pack: center;
+    flex-direction: column;
     justify-content: center;
     color: #000;
     margin-bottom: 20px;
@@ -39,6 +43,9 @@
 }
 
 .cover {
+    background-size: cover;
+    background-position: center;
+    /* background-image: url("../images/house1.jpg"); */
     top: 0;
     position: absolute;
     background-color: lightgray;
@@ -83,8 +90,6 @@ p {
 
 /* From Uiverse.io by btongheng */
 .book .button {
-    margin-top: 190px;
-    margin-bottom: 90px;
     --😀: #644dff;
     --😀😀: #4836bb;
     --😀😀😀: #654dff63;
@@ -200,4 +205,25 @@ p {
 .subscribe .submit-btn:hover {
   background-color: #07013d;
   box-shadow: -5px 6px 20px 0px rgba(88, 88, 88, 0.569);
+}
+
+.image-container {
+  width: 100%;
+  /* 设置宽度为占满父级 */
+  height: 300px;
+  /* 根据需要调整高度 */
+  overflow: hidden;
+  /* 隐藏溢出部分 */
+  position: relative;
+  /* 定位方式 */
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 确保图片完全覆盖父级，且保持图片的比例 */
+  position: absolute;
+  top: 0;
+  left: 0;
 }

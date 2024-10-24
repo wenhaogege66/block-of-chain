@@ -3,6 +3,7 @@ import { web3, BuyMyRoomContract, myERC20Contract } from "../utils/contracts"; /
 import { ethers, fromTwos } from "ethers";
 import { log } from "console";
 import "./index.css"
+import { url } from "inspector";
 
 const GanacheTestChainId = "0x539"; // Ganache默认的ChainId = 0x539 = Hex(1337)
 // TODO change according to your configuration
@@ -229,15 +230,23 @@ const BuyMyRoomPage = () => {
                     userHouses.map((element: any, index: number) => {
                         // 处理owner显示格式：前5个和后三个字符，中间用省略号
                         const shortenedOwner = `${element.owner.slice(0, 5)}...${element.owner.slice(-3)}`;
+                        // const backgroundImageUrl = "../images/house" + index.toString() + ".jpg"; // Replace with your image logic
+                        // const backgroundImageUrl_final = `url("${backgroundImageUrl}")`; // Replace with your image logic
+                        // style={{ backgroundImage: `url("${backgroundImageUrl}")`}}
+                        const backgroundImageUrl = `../images/house${index}.jpg`;
+                        console.log(backgroundImageUrl);
 
                         return (
                             <div key={index} className="book">
-                                <button className="button" onClick={() => onClickSellHouse(element.id, index)}>Sell it Now!</button>
-                                <div className="cover">
+                                <div><p>Owner: {shortenedOwner}</p></div>
+                                <div><p>ID: {element.id}</p></div>
+                                <div><p>For Sale: {element.forSale ? "Yes" : "No"}</p></div>
+                                <div><button className="button" onClick={() => onClickSellHouse(element.id, index)}>Sell it Now!</button></div>
+                                <div className="cover" style={{ backgroundImage: `url("${backgroundImageUrl}")` }}>
+                                    <div className="image-container">
+                                        <img src={require(`../images/house${index + 1}.jpg`)} alt="House" />
+                                    </div>
                                     <div><p>House {index + 1}</p></div>
-                                    <div><p>Owner: {shortenedOwner}</p></div>
-                                    <div><p>ID: {element.id}</p></div>
-                                    <div><p>For Sale: {element.forSale ? "Yes" : "No"}</p></div>
                                 </div>
                             </div>
                         );
@@ -255,12 +264,15 @@ const BuyMyRoomPage = () => {
 
                         return (
                             <div key={index} className="book">
-                                <button className="button" onClick={() => onClickBuyHouse(element.id, index, element.price)}>Buy it Now!</button>
-                                <div className="cover">
-                                    <div><p>House {index + 1}</p></div>
-                                    <div><p>Owner: {shortenedOwner}</p></div>
+                                                                    <div><p>Owner: {shortenedOwner}</p></div>
                                     <div><p>ID: {element.id}</p></div>
                                     <div><p>PRICE: {element.price}</p></div>
+                                <button className="button" onClick={() => onClickBuyHouse(element.id, index, element.price)}>Buy it Now!</button>
+                                <div className="cover" >
+                                    <div><p>House {index + 1}</p></div>
+                                    <div className="image-container">
+                                        <img src={require(`../images/house${10 - (index + 1)}.jpg`)} alt="House" />
+                                    </div>
                                 </div>
                             </div>
                         );

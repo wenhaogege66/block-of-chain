@@ -12,12 +12,10 @@ contract BuyMyRoom is ERC721Enumerable, Ownable {
     uint256 public platformFeePercent = 1; // 平台手续费比例，按百分比计算
     WenCoin public myERC20; // 相关的代币合约
     address public manager;
-
     modifier onlyManager() {
         require(msg.sender == manager);
         _;
     }
-
     // 房产结构
     struct House {
         uint id; // 房产ID
@@ -58,7 +56,6 @@ contract BuyMyRoom is ERC721Enumerable, Ownable {
             }
         }
     }
-
     // 铸造房产NFT
     function mintHouse(address to) public onlyOwner {
         _currentTokenId++;
@@ -77,12 +74,10 @@ contract BuyMyRoom is ERC721Enumerable, Ownable {
             forSale: false
         });
     }
-
     // 挂牌出售房产
     function listHouseForSale(uint256 tokenId, uint256 price) public {
         require(ownerOf(tokenId) == msg.sender, "You do not own this house");
         require(price > 0, "Price must be greater than 0");
-
         // 更新房产信息
         houses[tokenId].houseprice = price;
         houses[tokenId].listedTimestamp = block.timestamp;
@@ -95,9 +90,7 @@ contract BuyMyRoom is ERC721Enumerable, Ownable {
         House memory house = houses[tokenId];
         require(house.forSale, "House is not for sale");
         require(msg.sender != house.owner, "This house is already yours");
-        // require(msg.value == house.houseprice, "Incorrect value sent"); // 检查发送的价格是否和房价一致
 
-        // 平台手续费 = 上架时长 * 固定比例 * 房价
         uint256 timeListed = block.timestamp - house.listedTimestamp;
         uint256 platformFee = (timeListed *
             platformFeePercent *
@@ -110,7 +103,7 @@ contract BuyMyRoom is ERC721Enumerable, Ownable {
             house.houseprice - platformFee
         );
         // 将手续费转给合约所有者
-        myERC20.transferFrom(msg.sender, owner(), platformFee);
+        myERC20.transferFrom(msg.sender, manager, platformFee);
         // 更新房产信息
         _transfer(house.owner, msg.sender, tokenId);
         houses[tokenId].owner = payable(msg.sender);
@@ -146,7 +139,6 @@ contract BuyMyRoom is ERC721Enumerable, Ownable {
                 index++;
             }
         }
-
         // 调整数组长度以适应出售中的房产
         uint256[] memory result = new uint256[](index);
         for (uint256 i = 0; i < index; i++) {
@@ -177,11 +169,6 @@ contract BuyMyRoom is ERC721Enumerable, Ownable {
             house.listedTimestamp,
             house.id
         );
-    }
-
-    // 平台手续费设置
-    function setPlatformFeePercent(uint256 feePercent) public onlyOwner {
-        platformFeePercent = feePercent;
     }
 
     function getUserAddressHash() external returns (bytes32) {
