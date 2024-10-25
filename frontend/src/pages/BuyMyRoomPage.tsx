@@ -216,7 +216,7 @@ const BuyMyRoomPage = () => {
             {sellhousevisible && (
                 <div className="subscribe-container">
                     <div className="subscribe">
-                        <p>Sell house {sellhouseIndex}!</p>
+                        <p>Sell house {sellhouseIndex + 1}!</p>
                         <input placeholder="Give Your Price" onChange={e => setSellprice(ethers.toBigInt(e.target.value))} className="subscribe-input" />
                         <div className="submit-btn" onClick={() => confirmSell()}>Sell</div>
                     </div>
